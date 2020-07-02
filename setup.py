@@ -7,7 +7,7 @@ with open("README.md") as readme:
 
 setup(
     long_description=long_description,
-    long_description_content_type='text/markdown',
+    long_description_content_type="text/markdown",
     name="omnisolver-van",
     entry_points={
         "omnisolver": ["van = omnisolver.van"]
