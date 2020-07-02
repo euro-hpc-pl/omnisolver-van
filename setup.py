@@ -10,7 +10,7 @@ setup(
     long_description_content_type='text/markdown',
     name="omnisolver-van",
     entry_points={
-        "omnisolver": ["random = omnisolver.random"]
+        "omnisolver": ["van = omnisolver.van"]
     },
     setup_requires=["setuptools_scm"],
     install_requires=["omnisolver", "dimod", "numpy>=1.17.0", "pluggy", "torch"],
