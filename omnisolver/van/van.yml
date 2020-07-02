@@ -1,6 +1,6 @@
 schema_version: 1
 parser_name: "van"
-sampler_class: "omnisolver.samplers.van.VanSampler"
+sampler_class: "omnisolver.van.sampler.VanSampler"
 description: "A sampler based on Variational Autoregressive Networks"
 
 init_args:
