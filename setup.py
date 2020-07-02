@@ -12,6 +12,7 @@ setup(
     entry_points={
         "omnisolver": ["random = omnisolver.random"]
     },
+    setup_rquires=["setuptools_scm"],
     install_requires=["omnisolver", "dimod", "numpy>=1.17.0", "pluggy", "torch"],
     tests_require=["pytest"],
     packages=find_namespace_packages(exclude=["tests"]),
