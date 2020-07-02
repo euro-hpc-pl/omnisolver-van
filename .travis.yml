@@ -7,6 +7,10 @@ install:
 - pip install pep517
 - pip install .
 - pip install codecov
+script:
+- pytest
+after_success:
+- codecov
 deploy:
   provider: pypi
   username: __token__
