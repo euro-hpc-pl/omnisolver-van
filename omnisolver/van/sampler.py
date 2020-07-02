@@ -194,11 +194,7 @@ class SKModel:
 
         self.C_model = []
 
-        print(
-            "SK model with n = {}, beta = {}, field = {}, seed = {}".format(
-                n, beta, field, seed
-            )
-        )
+        print("SK model with n = {}, beta = {}, field = {}, seed = {}".format(n, beta, field, seed))
 
     def exact(self):
         assert self.n <= 20
@@ -305,9 +301,9 @@ class MaskedLinear(nn.Linear):
         return nn.functional.linear(x, self.mask * self.weight, self.bias)
 
     def extra_repr(self):
-        return super(
-            MaskedLinear, self
-        ).extra_repr() + ", exclusive={exclusive}".format(**self.__dict__)
+        return super(MaskedLinear, self).extra_repr() + ", exclusive={exclusive}".format(
+            **self.__dict__
+        )
 
 
 # TODO: reduce unused weights, maybe when torch.sparse is stable
@@ -357,11 +353,7 @@ class MADE(nn.Module):
         layers = []
         layers.append(
             MaskedLinear(
-                1,
-                1 if self.net_depth == 1 else self.net_width,
-                self.n,
-                self.bias,
-                exclusive=True,
+                1, 1 if self.net_depth == 1 else self.net_width, self.n, self.bias, exclusive=True
             )
         )
         for count in range(self.net_depth - 2):
@@ -377,9 +369,7 @@ class MADE(nn.Module):
     def _build_simple_block(self, in_channels, out_channels):
         layers = []
         layers.append(nn.PReLU(in_channels * self.n, init=0.5))
-        layers.append(
-            MaskedLinear(in_channels, out_channels, self.n, self.bias, exclusive=False)
-        )
+        layers.append(MaskedLinear(in_channels, out_channels, self.n, self.bias, exclusive=False))
         block = nn.Sequential(*layers)
         return block
 
@@ -387,9 +377,7 @@ class MADE(nn.Module):
         layers = []
         layers.append(ChannelLinear(in_channels, out_channels, self.n, self.bias))
         layers.append(nn.PReLU(in_channels * self.n, init=0.5))
-        layers.append(
-            MaskedLinear(in_channels, out_channels, self.n, self.bias, exclusive=False)
-        )
+        layers.append(MaskedLinear(in_channels, out_channels, self.n, self.bias, exclusive=False))
         block = ResBlock(nn.Sequential(*layers))
         return block
 
@@ -400,9 +388,7 @@ class MADE(nn.Module):
         if self.x_hat_clip:
             # Clip value and preserve gradient
             with torch.no_grad():
-                delta_x_hat = (
-                    torch.clamp(x_hat, self.x_hat_clip, 1 - self.x_hat_clip) - x_hat
-                )
+                delta_x_hat = torch.clamp(x_hat, self.x_hat_clip, 1 - self.x_hat_clip) - x_hat
             assert not delta_x_hat.requires_grad
             x_hat = x_hat + delta_x_hat
 
@@ -418,9 +404,7 @@ class MADE(nn.Module):
     # 0 < x_hat < 1
     # x_hat will not be flipped by z2
     def sample(self, batch_size):
-        sample = torch.zeros(
-            [batch_size, self.n], dtype=default_dtype_torch, device=self.device
-        )
+        sample = torch.zeros([batch_size, self.n], dtype=default_dtype_torch, device=self.device)
         for i in range(self.n):
             x_hat = self.forward(sample)
             sample[:, i] = torch.bernoulli(x_hat[:, i]).to(default_dtype_torch) * 2 - 1
@@ -428,11 +412,7 @@ class MADE(nn.Module):
         if self.z2:
             # Binary random int 0/1
             flip = (
-                torch.randint(
-                    2, [batch_size, 1], dtype=sample.dtype, device=sample.device
-                )
-                * 2
-                - 1
+                torch.randint(2, [batch_size, 1], dtype=sample.dtype, device=sample.device) * 2 - 1
             )
             sample *= flip
 
@@ -443,9 +423,9 @@ class MADE(nn.Module):
 
     def _log_prob(self, sample, x_hat):
         mask = (sample + 1) / 2
-        log_prob = torch.log(x_hat + self.epsilon) * mask + torch.log(
-            1 - x_hat + self.epsilon
-        ) * (1 - mask)
+        log_prob = torch.log(x_hat + self.epsilon) * mask + torch.log(1 - x_hat + self.epsilon) * (
+            1 - mask
+        )
         log_prob = log_prob.view(log_prob.shape[0], -1).sum(dim=1)
         return log_prob
 
