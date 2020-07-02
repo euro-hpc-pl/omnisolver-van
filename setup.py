@@ -12,7 +12,7 @@ setup(
     entry_points={
         "omnisolver": ["random = omnisolver.random"]
     },
-    install_requires=["omnisolver", "dimod", "numpy>=1.17.0", "pluggy", "pytorch"],
+    install_requires=["omnisolver", "dimod", "numpy>=1.17.0", "pluggy", "torch"],
     tests_require=["pytest"],
     packages=find_namespace_packages(exclude=["tests"]),
     package_data={"omnisolver.van": ["van.yml"]},
